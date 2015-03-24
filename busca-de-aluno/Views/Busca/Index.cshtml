@@ -24,8 +24,8 @@
             data: JSON.stringify({ "RA": $("#txtRA").val() }),
             dataType: "json",
             success: function (data) {
-                if (!data) {
-                    alert("Aluno não encontrado");
+                if (data.message) {
+                    alert(data.message);
                     return;
                 }
                 var marker = new google.maps.Marker(
@@ -45,7 +45,6 @@
             type: "POST",
             url: '@Url.Action("Listar", "Lista")',
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({ "RA": $("#txtRA").val() }),
             dataType: "json",
             success: function (list) {
                 $("#div-buscas").html("");

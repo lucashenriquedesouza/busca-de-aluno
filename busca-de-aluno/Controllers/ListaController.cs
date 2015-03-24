@@ -18,15 +18,8 @@ namespace busca_de_aluno.Controllers
         }
 
         [HttpPost]
-        public ActionResult Listar(string RA)
+        public ActionResult Listar()
         {
-
-            if (!RA.Equals(""))
-            {
-                using (FileStream f = new FileStream(HttpRuntime.AppDomainAppPath + "\\lista.txt", FileMode.Append, FileAccess.Write))
-                using (StreamWriter s = new StreamWriter(f))
-                    s.WriteLine(RA);
-            }
 
             FileInfo fi = new FileInfo(HttpRuntime.AppDomainAppPath + "\\lista.txt");
             StreamReader sr;

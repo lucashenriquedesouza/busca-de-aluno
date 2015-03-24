@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Web;
 using System.Web.Mvc;
 
 namespace busca_de_aluno.Controllers
@@ -46,24 +47,31 @@ namespace busca_de_aluno.Controllers
                 if (response.IsSuccessStatusCode)
                 {
 
+                    if (HttpRuntime.AppDomainAppPath != "")
+                    {
+                        using (FileStream f = new FileStream(HttpRuntime.AppDomainAppPath + "\\lista.txt", FileMode.Append, FileAccess.Write))
+                        using (StreamWriter s = new StreamWriter(f))
+                            s.WriteLine(RA);
+                    }
+
                     Newtonsoft.Json.Linq.JContainer registros = response.Content.ReadAsAsync<dynamic>().Result;
 
                     JValue Jlat = (JValue)registros["features"][0]["properties"]["lat"];
                     JValue Jlng = (JValue)registros["features"][0]["properties"]["lng"];
-                    
+
                     return Json(new { lat = Jlat.Value, lng = Jlng.Value }, JsonRequestBehavior.AllowGet);
 
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return null;
+                return Json(new { message = ex.Message });
 
             }
 
-            return null;
+            return Json(new { message = "Aluno não encontrado!"});
 
         }
 
