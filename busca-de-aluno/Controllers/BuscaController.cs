@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
-using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Web;
-using System.Threading;
 
 namespace busca_de_aluno.Controllers
 {
