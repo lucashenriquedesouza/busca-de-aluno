@@ -16,48 +16,61 @@
 
     google.maps.event.addDomListener(window, 'load', initialize);
 
+    function setMark() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Buscar", "Busca")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ "RA": $("#txtRA").val() }),
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    alert("Aluno não encontrado");
+                    return;
+                }
+                var marker = new google.maps.Marker(
+                                                        {
+                                                            position: new google.maps.LatLng(data.lat, data.lng),
+                                                            map: map,
+                                                        }
+                                                    );
+                map.setCenter(new google.maps.LatLng(data.lat, data.lng));
+
+            }
+        });
+    }
+
+    function makeList() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Listar", "Lista")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ "RA": $("#txtRA").val() }),
+            dataType: "json",
+            success: function (list) {
+                $("#div-buscas").html("");
+                $("#div-buscas").append("<ul>");
+                $.each(list.RAs, function (i, item) {
+                    $("#div-buscas").append("<li>" + item + "</li>");
+                })
+                $("#div-buscas").append("</ul>");
+            }
+        });
+    }
+
     $(document).ready(function () {
+        makeList();
         $("#btnBuscar").click(function () {
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("Buscar", "Busca")',
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({ "RA": $("#txtRA").val() }),
-                dataType: "json",
-                success: function (data) {
-                    if (!data) {
-                        alert("Aluno não encontrado");
-                        return
-                    }
-                    var marker = new google.maps.Marker(
-                                                            {
-                                                                position: new google.maps.LatLng(data.lat, data.lng),
-                                                                map: map,
-                                                            }
-                                                        )
-                    map.setCenter(new google.maps.LatLng(data.lat, data.lng))
-                    //$.ajax({
-                    //    type: "POST",
-                    //    url: '@Url.Action("Listar", "Busca")',
-                    //    contentType: "application/json; charset=utf-8",
-                    //    dataType: "json",
-                    //    success: function (data) {
-                    //        $("#div-buscas").html("");
-                    //        $("#div-buscas").append("<ul>");
-                    //        $.each(data.RAs, function (i, item) {
-                    //            $("#div-buscas").append("<li>" + item + "</li>");
-                    //        })
-                    //        $("#div-buscas").append("</ul>");
-                    //    },
-                    //})
-                },
-            });
+            $.when(setMark()).done(makeList());
         })
     })
 
 </script>
 <div id="map-canvas"></div>
-<div id="div-buscas" style="width: 15%; position: absolute; top: 30%; left: 80%; background-color: white;"></div>
+<div class="list-group" style="width: 15%; height:50%; position: absolute; top: 30%; left: 80%; background-color:white;">
+    <span>Pesquisas Recentes</span>
+    <div id="div-buscas"></div>
+</div>
 <div style="position: absolute; top: 15%; left: 25%">
     @Html.TextBox("txtRA", "", new { @size = "100" })
     <input type="button" id="btnBuscar" value="Buscar..." />

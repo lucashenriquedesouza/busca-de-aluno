@@ -58,11 +58,7 @@ namespace busca_de_aluno.Controllers
 
                     JValue Jlat = (JValue)registros["features"][0]["properties"]["lat"];
                     JValue Jlng = (JValue)registros["features"][0]["properties"]["lng"];
-
-                    using (FileStream f = new FileStream(this.Server.MapPath("") + "\\lista.txt", FileMode.Append, FileAccess.Write))
-                    using (StreamWriter s = new StreamWriter(f))
-                        s.WriteLine(RA);
-
+                    
                     return Json(new { lat = Jlat.Value, lng = Jlng.Value }, JsonRequestBehavior.AllowGet);
 
                 }
@@ -79,28 +75,6 @@ namespace busca_de_aluno.Controllers
 
         }
 
-        [HttpPost]
-        public ActionResult Listar()
-        {
-
-            StreamReader sr = new StreamReader(this.Server.MapPath("") + "\\lista.txt");
-
-            List<string> listRAs = new List<string>();
-
-            string linha = sr.ReadLine();
-
-            while (linha != null)
-            {
-
-                listRAs.Add(linha);
-
-                linha = sr.ReadLine();
-
-            }
-
-            return Json(new { RAs = listRAs }, JsonRequestBehavior.AllowGet);
-
-        }
     }
 
 }
